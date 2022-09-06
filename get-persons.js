@@ -30,7 +30,7 @@ const getPersons =  (url) => {
     })
   
   }).end()
- console.log(arrayOfPersons)
+
 }
 
 
@@ -41,14 +41,14 @@ program
 
 program.command('get-persons')
   .description('Make a network request to fetch the most popular persons')
-  .argument('<page>', 'select page number to show')
+  .argument('<page>', 'select page number to show persons')
   .requiredOption('--popular , -p', 'Fetch the popular persons')
   .requiredOption('--page', 'The page of persons data results to fetch')
   .action((page, options, command) => {
 
     const url = `https://api.themoviedb.org/3/person/popular?api_key=${API_KEY}&language=en-US&page=${page}`
     const spinner = ora(`Fetching the popular person's data...`).start()
-    
+
  
     request(url, res => {
       let data = []
@@ -69,7 +69,7 @@ program.command('get-persons')
          const pageNumberMsg = currentPage <= 500 && chalk.white(`
          ---------------------------------------- \n 
          Page: ${currentPage} of: ${totalPages}
-         `) 
+         `)   
           console.log(pageNumberMsg)
         //persons data
         arrayOfPersons.map(person => {
@@ -91,18 +91,18 @@ program.command('get-persons')
             }
 
           })
-          
+
           if(moviesArray.length === 0) console.log(chalk.red(`${person.name} does not appear in any movie `))
-          
+
         })
-        
+
 
         setTimeout(() => {
           spinner.succeed('data loded')
 
 
         }, 1000);
-       
+
       })
 
       res.on('error', error => {
