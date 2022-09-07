@@ -13,25 +13,6 @@ const program = new Command();
 
 
 
-const getPersons =  (url) => {
-  let arrayOfPersons;
-  request(url, res => {
-    let data = []
-    
-    res.on('data', chunk => {
-      data.push(chunk)
-      
-    })
-
-    res.on('end', () => {
-      const obj = JSON.parse(Buffer.concat(data).toString())
-      arrayOfPersons = obj.results
-     
-    })
-  
-  }).end()
-
-}
 
 
 program
@@ -60,44 +41,11 @@ program.command('get-persons')
   
       res.on('end', () => {
         const obj = JSON.parse(Buffer.concat(data).toString())
-        const arrayOfPersons = obj.results
-        const currentPage = obj.page
-        const totalPages = obj.total_pages
 
-         // page number for pagination 
-
-         const pageNumberMsg = currentPage <= 500 && chalk.white(`
-         ---------------------------------------- \n 
-         Page: ${currentPage} of: ${totalPages}
-         `)   
-          console.log(pageNumberMsg)
-        //persons data
-        arrayOfPersons.map(person => {
-          const moviesArray = person.known_for.filter(title => title.media_type === 'movie')
-          const knownFor = person.known_for_department === "Acting" ? chalk.magenta(person.known_for_department) : ''
-
-          console.log(chalk.white('---------------------------------------- \n'))
-          console.log(chalk.white('Person: \n'))
-          console.log(chalk.white(`ID: ${person.id}`))
-          console.log(chalk.white(`Name:`), chalk.bold.blue(`${person.name}`))
-          console.log(chalk.white(`Department:`), knownFor, '\n')
-          moviesArray.length > 0 && console.log(chalk.white('Appearing in movies: \n'))
-          moviesArray.map(({id, title, release_date}) => {
-            if(moviesArray.length > 0) {
-              console.log(chalk.white(`\t Movie:`))
-              console.log(chalk.white(`\t ID: ${id}`))
-              console.log(chalk.white(`\t Release Date: ${release_date}`))
-              console.log(chalk.white(`\t Title: ${title} \n`))
-            }
-
-          })
-
-          if(moviesArray.length === 0) console.log(chalk.red(`${person.name} does not appear in any movie `))
-
-        })
 
 
         setTimeout(() => {
+          getPersons(obj)
           spinner.succeed('data loded')
 
 
@@ -118,4 +66,3 @@ program.command('get-persons')
 
 
   program.parse();
-
